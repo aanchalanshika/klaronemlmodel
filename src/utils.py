@@ -482,3 +482,27 @@ def calculate_score(row, category):
         return round(business_score)
     else:
         return 0
+
+
+# ==========================================================
+# Format Indian Currency
+# ==========================================================
+def format_indian_currency(number):
+    if number is None:
+        return ""
+    try:
+        s = str(int(round(float(number))))
+    except Exception:
+        return str(number)
+        
+    if len(s) <= 3:
+        return s
+    last_three = s[-3:]
+    remaining = s[:-3]
+    groups = []
+    while len(remaining) > 0:
+        groups.append(remaining[-2:])
+        remaining = remaining[:-2]
+    groups.reverse()
+    return ",".join(groups) + "," + last_three
+

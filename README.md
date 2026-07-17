@@ -6,6 +6,33 @@ The backend is built with **FastAPI** and is ready to be consumed by a React fro
 
 ---
 
+## 🧠 Why This System is Superior to a Simple Hardcoded Calculator
+
+If you build a simple calculator using hardcoded mathematical rules (e.g., `Price = RAM * 5000 + SSD * 8000`), it fails immediately in the real world. Here is why this hybrid machine learning system is vastly superior:
+
+1. **Non-Linear Pricing Relationships (Real Market Value)**: 
+   Real-world laptop pricing is highly non-linear. An older-generation Intel i7 laptop might be cheaper than a newer-generation i5, and brand names (Apple vs. others) carry different price premiums. A hardcoded calculator cannot compute these fluctuations. Our **Random Forest Regressor (ML)** learns these complex, real-world patterns directly from market datasets to predict accurate, realistic prices.
+2. **On-the-Fly Feature Engineering (Dynamic Extraction)**:
+   Instead of forcing the client (frontend) to manually input parsed categories, the system dynamically extracts hardware features (like CPU series, generation, GPU brand, and screen dimensions) directly from raw text strings (e.g., parsing `"Intel Core i3 11th Gen"` on the fly).
+3. **Hybrid AI Architecture**:
+   It merges two major paradigms in Artificial Intelligence:
+   * **Data-driven AI (Machine Learning)** for valuation (predicting the price).
+   * **Knowledge-engineered AI (Expert System)** for classification (calculating use-case suitability scores based on hardware design and performance constraints).
+
+---
+
+## 🛠️ What Has Been Done Here
+
+We built a modular, production-grade machine learning and deployment pipeline:
+* **Data Cleaning & Standardization**: Handled duplicates, missing values, and cleaned text white spaces.
+* **Hardware Normalization**: Standardized graphics (GPU) and processor (CPU) descriptions for clean grouping.
+* **ML Preprocessing & Encoding**: One-hot encoded categorical columns and saved the encoder state for production consistency.
+* **Model Training & Evaluation**: Trained a `RandomForestRegressor` achieving an **$R^2$ accuracy score of ~87%**.
+* **Shared Logic Library (`utils.py`)**: Centralized processing helpers and suitability scoring logic to avoid code duplication.
+* **FastAPI Backend Server**: Exposed a `/predict` endpoint that handles CORS, validates payloads using Pydantic, and returns price predictions and suitability scores.
+
+---
+
 ## 🚀 Project Architecture & Pipeline
 
 The project follows a modular machine learning pipeline from raw data to real-time endpoint serving:

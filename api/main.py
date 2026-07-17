@@ -66,13 +66,22 @@ class LaptopRawSpecs(BaseModel):
         allow_population_by_field_name = True
 
 
+class RecommendationQuery(BaseModel):
+    query: str
+
+
+# Instantiate recommendation engine
+from recommendation_engine import RecommendationEngine
+recommendation_engine = RecommendationEngine()
+
+
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Klarone Laptop Price Prediction & Recommendation API!"}
 
 
-@app.post("/predict")
-def predict_and_recommend(specs: LaptopRawSpecs):
+@app.post("/estimate-value")
+def estimate_value(specs: LaptopRawSpecs):
     try:
         # Convert Pydantic model to dictionary representation using aliases
         specs_dict = specs.model_dump(by_alias=True)
@@ -186,5 +195,25 @@ def predict_and_recommend(specs: LaptopRawSpecs):
 
     except ValueError as val_err:
         raise HTTPException(status_code=400, detail=str(val_err))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/recommend")
+def recommend(query_data: RecommendationQuery):
+    try:
+        result = recommendation_engine.recommend(query_data.query, top_k=5)
+        recommendations = []
+        for r in result.get("recommendations", []):
+            recommendations.append({
+                "model_name": r["model_name"],
+                "actual_price": r["price"],
+                "recommendation_score": round(r["overall_match"]),
+                "gaming_score": r["gaming_score"],
+                "student_score": r["student_score"],
+                "business_score": r["business_score"],
+                "reason": r["explanation"]
+            })
+        return {"recommendations": recommendations}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
